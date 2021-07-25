@@ -35,14 +35,8 @@ print(cup)
 money = 0
 
 
-# TODO: Turn off the Coffee Machine by entering “off” to the prompt.
-
-
 def shut_down():
     print("Shutting off the Coffee Maker now.")
-
-
-# TODO: Print report. Generates the current resources in the coffee machine
 
 
 def print_report():
@@ -50,9 +44,6 @@ def print_report():
     print(f"Milk: {resources['milk']}")
     print(f"Coffee: {resources['coffee']}")
     print(f"Money: ${money:.2f}")
-
-
-# TODO: Ask the user what they would like to order.  (Espresso, Latte, Cappuccino)
 
 
 def order_drink():
@@ -68,12 +59,16 @@ def order_drink():
         return menu_choice
 
 
-# TODO: Verify if there are enough resources to process the selection
+# TODO: Verify if there are enough resources to process the selection. Determine which resource(s) we are short on
 
 
 def check_resources(drink_selection):
-    for key in drink_selection:
-        print(drink_selection[key])
+    """Takes a drink_selection as input and returns True if there are sufficient resources, otherwise False"""
+    for key in drink_selection["ingredients"]:
+        if drink_selection["ingredients"][key] > resources[key]:
+            return False
+        else:
+            return True
 
 
 # TODO: Display the cost of the selection and confirm
@@ -82,12 +77,12 @@ def check_resources(drink_selection):
 # TODO: Process beverage
 
 
-# print_report()
-
 selection = order_drink()
 if selection == "off":
     shut_down()
 elif selection == "report":
     print_report()
 else:
-    check_resources(selection)
+    enough_resources = check_resources(selection)
+    if not enough_resources:
+        print("Sorry, we don't have enough resources to make that selection.")
