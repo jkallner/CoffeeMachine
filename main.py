@@ -35,9 +35,10 @@ print(cup)
 money = 0.00
 
 
+
 def shut_down():
     print("Shutting off the Coffee Maker now.")
-    return
+    return True
 
 
 def print_report():
@@ -97,6 +98,8 @@ def payment_processing(beverage):
         print("Sorry that's not enough money.  Money refunded")
         return False
     else:
+        change = total_money_collected - cost
+        print(f"Here is {change:.2f} in change.")
         print(f"Here is your {next(iter(beverage))}")
         return cost
 
@@ -106,24 +109,24 @@ def payment_processing(beverage):
 
 
 def run_coffee_machine():
-    selection = order_drink()
-    if selection == "off":
-        shut_down()
-    elif selection == "report":
-        print_report()
-    else:
-        enough_resources = check_resources(selection)
-        if not enough_resources:
-            print("Sorry, we don't have enough resources to make that selection.")
-        money_collected = payment_processing(selection)
-        if not money_collected:
-            run_coffee_machine()
+    turn_off = False
+    while not turn_off:
+        selection = order_drink()
+        if selection == "off":
+            turn_off = shut_down()
+        elif selection == "report":
+            print_report()
         else:
-            return money_collected
+            enough_resources = check_resources(selection)
+            if not enough_resources:
+                print("Sorry, we don't have enough resources to make that selection.")
+            money_collected = payment_processing(selection)
+            if money_collected:
+                return money_collected
 
 
 money = run_coffee_machine()
-print(money)
+# print(money)
 
 
 
