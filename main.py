@@ -32,11 +32,12 @@ resources = {
     "coffee": 100,
 }
 print(cup)
-money = 0
+money = 0.00
 
 
 def shut_down():
     print("Shutting off the Coffee Maker now.")
+    return
 
 
 def print_report():
@@ -71,18 +72,58 @@ def check_resources(drink_selection):
             return True
 
 
-# TODO: Display the cost of the selection and confirm
 # TODO: Process coins to pay for the selection and return change
+
+
+def payment_processing(beverage):
+    """Takes the selected beverage as input and returns the processed payment amount or cost if succesful"""
+    coins = {}
+    total_money_collected = 0.00
+    cost = beverage["cost"]
+
+    print("Please insert coins.")
+    coins["quarters"] = input("How many quarters?: ")
+    coins["dimes"] = input("How many dimes?: ")
+    coins["nickels"] = input("How many nickels?: ")
+    coins["pennies"] = input("How many pennies?: ")
+    # Loop allows for user to just hit return if they don't have that type of coin and have it equate to 0
+    for key in coins:
+        if coins[key] == "":
+            coins[key] = 0
+        coins[key] = int(coins[key])
+    total_money_collected = coins["quarters"] * .25 + coins["dimes"] * .10 + coins["nickels"] * .05 + coins["pennies"] * .01
+    # print(total_money_collected)
+    if cost > total_money_collected:
+        print("Sorry that's not enough money.  Money refunded")
+        return False
+    else:
+        print(f"Here is your {next(iter(beverage))}")
+        return cost
+
+
 # TODO: Verify if the transaction was successful
 # TODO: Process beverage
 
 
-selection = order_drink()
-if selection == "off":
-    shut_down()
-elif selection == "report":
-    print_report()
-else:
-    enough_resources = check_resources(selection)
-    if not enough_resources:
-        print("Sorry, we don't have enough resources to make that selection.")
+def run_coffee_machine():
+    selection = order_drink()
+    if selection == "off":
+        shut_down()
+    elif selection == "report":
+        print_report()
+    else:
+        enough_resources = check_resources(selection)
+        if not enough_resources:
+            print("Sorry, we don't have enough resources to make that selection.")
+        money_collected = payment_processing(selection)
+        if not money_collected:
+            run_coffee_machine()
+        else:
+            return money_collected
+
+
+money = run_coffee_machine()
+print(money)
+
+
+
