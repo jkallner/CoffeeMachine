@@ -31,32 +31,29 @@ resources = {
     "milk": 200,
     "coffee": 100,
 }
-print(cup)
-money = 0.00
-
 
 
 def shut_down():
     print("Shutting off the Coffee Maker now.")
-    return True
+    return "shut_down"
 
 
-def print_report():
+def print_report(money_collected):
     print(f"Water: {resources['water']}")
     print(f"Milk: {resources['milk']}")
     print(f"Coffee: {resources['coffee']}")
-    print(f"Money: ${money:.2f}")
+    print(f"Money: ${money_collected:.2f}")
 
 
 def order_drink():
     menu_choice = input("What would you like to order? "
                         "(Type 'E' for Espresso, 'L' for Latte, or 'C' for Cappuccino): ").lower()
     if menu_choice == "e":
-        return MENU["espresso"]
+        return "espresso"
     elif menu_choice == "l":
-        return MENU["latte"]
+        return "latte"
     elif menu_choice == "c":
-        return MENU["cappuccino"]
+        return "cappuccino"
     else:
         return menu_choice
 
@@ -66,67 +63,62 @@ def order_drink():
 
 def check_resources(drink_selection):
     """Takes a drink_selection as input and returns True if there are sufficient resources, otherwise False"""
-    for key in drink_selection["ingredients"]:
-        if drink_selection["ingredients"][key] > resources[key]:
+    for key in MENU[drink_selection]["ingredients"]:
+        if MENU[drink_selection]["ingredients"][key] > resources[key]:
             return False
         else:
             return True
 
 
-# TODO: Process coins to pay for the selection and return change
-
-
 def payment_processing(beverage):
     """Takes the selected beverage as input and returns the processed payment amount or cost if succesful"""
     coins = {}
-    total_money_collected = 0.00
-    cost = beverage["cost"]
+    total_payment_collected = 0.00
+    cost = MENU[beverage]["cost"]
 
     print("Please insert coins.")
     coins["quarters"] = input("How many quarters?: ")
     coins["dimes"] = input("How many dimes?: ")
     coins["nickels"] = input("How many nickels?: ")
     coins["pennies"] = input("How many pennies?: ")
-    # Loop allows for user to just hit return if they don't have that type of coin and have it equate to 0
     for key in coins:
         if coins[key] == "":
             coins[key] = 0
         coins[key] = int(coins[key])
     total_money_collected = coins["quarters"] * .25 + coins["dimes"] * .10 + coins["nickels"] * .05 + coins["pennies"] * .01
-    # print(total_money_collected)
     if cost > total_money_collected:
-        print("Sorry that's not enough money.  Money refunded")
+        print("Sorry that's not enough money.  Money refunded.")
         return False
     else:
         change = total_money_collected - cost
         print(f"Here is {change:.2f} in change.")
-        print(f"Here is your {next(iter(beverage))}")
+        print(f"Enjoy your {beverage}, have a great day!")
         return cost
 
 
-# TODO: Verify if the transaction was successful
-# TODO: Process beverage
-
-
 def run_coffee_machine():
-    turn_off = False
-    while not turn_off:
+    print(cup)
+    turn_off = ""
+    money = 0.00
+    while turn_off != "shut_down":
         selection = order_drink()
         if selection == "off":
             turn_off = shut_down()
         elif selection == "report":
-            print_report()
+            print_report(money)
         else:
             enough_resources = check_resources(selection)
             if not enough_resources:
                 print("Sorry, we don't have enough resources to make that selection.")
-            money_collected = payment_processing(selection)
-            if money_collected:
-                return money_collected
+            else:
+                transaction_amount = payment_processing(selection)
+                if transaction_amount:
+                    money += transaction_amount
+    return money
 
 
-money = run_coffee_machine()
-# print(money)
+run_coffee_machine()
+
 
 
 
