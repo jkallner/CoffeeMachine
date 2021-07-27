@@ -28,14 +28,9 @@ MENU = {
 
 resources = {
     "water": 300,
-    "milk": 0,
-    "coffee": 0,
+    "milk": 200,
+    "coffee": 100,
 }
-# resources = {
-#     "water": 300,
-#     "milk": 200,
-#     "coffee": 100,
-# }
 
 
 def shut_down():
@@ -63,21 +58,23 @@ def order_drink():
         return menu_choice
 
 
-# TODO: Verify if there are enough resources to process the selection. Determine which resource(s) we are short on
-# TODO: Fix error where program continues to collect money after report which resource it is short on
-
 def check_resources(drink_selection):
     """Takes a drink_selection as input and returns True if there are sufficient resources, otherwise False"""
+    global resources
+    num_resources_missing = 0
     for key in MENU[drink_selection]["ingredients"]:
         if MENU[drink_selection]["ingredients"][key] > resources[key]:
-            print(f"There is insufficient {resources[key]}, to make this drink.")
-            return False
-        else:
-            return True
+            print(f"There is insufficient {key}, to make this drink.")
+            num_resources_missing += 1
+    if num_resources_missing == 0:
+        for key in MENU[drink_selection]["ingredients"]:
+            resources[key] = resources[key] - MENU[drink_selection]["ingredients"][key]
+    return num_resources_missing
 
 
+# TODO: If payment refunded add back the resources that weren't taken
 def payment_processing(beverage):
-    """Takes the selected beverage as input and returns the processed payment amount or cost if succesful"""
+    """Takes the selected beverage as input and returns the processed payment amount or cost if successful"""
     coins = {}
     total_payment_collected = 0.00
     cost = MENU[beverage]["cost"]
@@ -97,7 +94,7 @@ def payment_processing(beverage):
         return False
     else:
         change = total_money_collected - cost
-        print(f"Here is {change:.2f} in change.")
+        print(f"Here is ${change:.2f} in change.")
         print(f"Enjoy your {beverage}, have a great day!")
         return cost
 
@@ -113,9 +110,9 @@ def run_coffee_machine():
         elif selection == "report":
             print_report(money)
         else:
-            enough_resources = check_resources(selection)
-            if not enough_resources:
-                print("Sorry, we don't have enough resources to make that selection.")
+            total_resources_missing = check_resources(selection)
+            if total_resources_missing > 0:
+                print("Please make another selection.")
             else:
                 transaction_amount = payment_processing(selection)
                 if transaction_amount:
