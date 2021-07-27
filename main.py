@@ -68,7 +68,7 @@ def check_resources(drink_selection):
             num_resources_missing += 1
     if num_resources_missing == 0:
         for key in MENU[drink_selection]["ingredients"]:
-            resources[key] = resources[key] - MENU[drink_selection]["ingredients"][key]
+            resources[key] -= MENU[drink_selection]["ingredients"][key]
     return num_resources_missing
 
 
@@ -91,6 +91,8 @@ def payment_processing(beverage):
     total_money_collected = coins["quarters"] * .25 + coins["dimes"] * .10 + coins["nickels"] * .05 + coins["pennies"] * .01
     if cost > total_money_collected:
         print("Sorry that's not enough money.  Money refunded.")
+        for key in MENU[beverage]["ingredients"]:
+            resources[key] += MENU[beverage]["ingredients"][key]
         return False
     else:
         change = total_money_collected - cost
