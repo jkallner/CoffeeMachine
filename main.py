@@ -72,7 +72,6 @@ def check_resources(drink_selection):
     return num_resources_missing
 
 
-# TODO: If payment refunded add back the resources that weren't taken
 def payment_processing(beverage):
     """Takes the selected beverage as input and returns the processed payment amount or cost if successful"""
     coins = {}
