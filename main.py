@@ -39,9 +39,9 @@ def shut_down():
 
 
 def print_report(money_collected):
-    print(f"Water: {resources['water']}")
-    print(f"Milk: {resources['milk']}")
-    print(f"Coffee: {resources['coffee']}")
+    print(f"Water: {resources['water']}ml")
+    print(f"Milk: {resources['milk']}ml")
+    print(f"Coffee: {resources['coffee']}g")
     print(f"Money: ${money_collected:.2f}")
 
 
