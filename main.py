@@ -28,9 +28,14 @@ MENU = {
 
 resources = {
     "water": 300,
-    "milk": 200,
-    "coffee": 100,
+    "milk": 0,
+    "coffee": 0,
 }
+# resources = {
+#     "water": 300,
+#     "milk": 200,
+#     "coffee": 100,
+# }
 
 
 def shut_down():
@@ -59,12 +64,13 @@ def order_drink():
 
 
 # TODO: Verify if there are enough resources to process the selection. Determine which resource(s) we are short on
-
+# TODO: Fix error where program continues to collect money after report which resource it is short on
 
 def check_resources(drink_selection):
     """Takes a drink_selection as input and returns True if there are sufficient resources, otherwise False"""
     for key in MENU[drink_selection]["ingredients"]:
         if MENU[drink_selection]["ingredients"][key] > resources[key]:
+            print(f"There is insufficient {resources[key]}, to make this drink.")
             return False
         else:
             return True
